@@ -1,6 +1,7 @@
 package manager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import task.Epic;
 import task.SubTask;
 import task.Task;
 import task.TaskStatus;
-import task.TaskType;
 
 public class StoringTasks implements TaskManager {
 
@@ -27,20 +27,55 @@ public class StoringTasks implements TaskManager {
 		this.managersTaskList = Managers.getHistory();
 	}
 
+	private int generateId() {
+		return ++taskId;
+	}
+
 	@Override
-	public ArrayList<Task> getAllTasks(TaskType type) { // Получение списка всех задач.
-		if (type == TaskType.EPIC) {
-			return new ArrayList<>(epics.values());
-		} else if (type == TaskType.SUBTASK) {
-			return new ArrayList<>(subTasks.values());
+	public Task getTaskById(int id) { // получить задачу по ID
+		managersTaskList.add(tasks.get(id));
+		return tasks.get(id);
+	}
+
+	@Override
+	public Epic getEpicById(int id) { // получить эпик по ID
+		managersTaskList.add(epics.get(id));
+		return epics.get(id);
+	}
+
+	@Override
+	public SubTask getSubtaskById(int id) { // получить подзадачу по ID
+		managersTaskList.add(subTasks.get(id));
+		return subTasks.get(id);
+	}
+
+	@Override
+	public List<Task> getAllTasks() { // Получение списка всех задач.
+		if (tasks.size() == 0) {
+			return Collections.emptyList();
 		}
 		return new ArrayList<>(tasks.values());
 	}
 
 	@Override
+	public List<Epic> getAllEpics() { // Получение списка всех эпиков.
+		if (epics.size() == 0) {
+			return Collections.emptyList();
+		}
+		return new ArrayList<>(epics.values());
+	}
+
+	@Override
+	public List<SubTask> getAllSubtasks() { // Получение списка всех подзадач.
+		if (subTasks.size() == 0) {
+			return Collections.emptyList();
+		}
+		return new ArrayList<>(subTasks.values());
+	}
+
+	@Override
 	public void removeTasks() { // Удаление всех задач.
 		tasks.clear();
-
 	}
 
 	@Override
@@ -52,6 +87,10 @@ public class StoringTasks implements TaskManager {
 	@Override
 	public void removeSubtasks() { // Удаление подзадачи.
 		subTasks.clear();
+		for (Epic epic : epics.values()) { // очистка подзадач внутри эпиков и обновление их статусов
+			epic.getSubTasks().clear();
+			updateTask(epic);
+		}
 	}
 
 	public ManagersTaskList getManagersTaskList() {
@@ -79,27 +118,44 @@ public class StoringTasks implements TaskManager {
 		return task;
 	}
 
+	/**
+	 * Метод createTask создает новую задачу с уникальным ID, сохраняет ее в
+	 * коллекции tasks и возвращает созданный уникальный ID. createEpic создает
+	 * новый эпик с уникальным ID, сохраняет ее в коллекции tasks и возвращает
+	 * созданный уникальный ID. создает новую подзадачу с уникальным ID. Перед этим
+	 * она получает ссылку на эпик по ID, переданному в подзадаче
+	 * (subtask.getEpicId()). Если эпик найден, подзадача сохраняется в его списке
+	 * подзадач (epic.getSubTasks()) и возвращается созданный уникальный ID. Если
+	 * эпик не найден, возвращается ошибка. return -1;
+	 */
 	@Override
-	public void createTask(Task task) { // Создание объекта.
-		if (task != null) {
-			int taskId = generateId(task);
-			task.setId(taskId);
-			switch (task.getType()) {
-			case TASK:
-				tasks.put(taskId, task);
-				break;
-			case EPIC:
-				task.setStatus(checkStatus((Epic) task));
-				epics.put(taskId, (Epic) task);
-				break;
-			case SUBTASK:
-				subTasks.put(taskId, (SubTask) task);
-				SubTask sub = (SubTask) task;
-				epics.get(sub.getEpicId()).putSubTask(sub);
-				Epic epic = epics.get(sub.getEpicId());
-				epics.get(sub.getEpicId()).setStatus(checkStatus(epic));
-				break;
-			}
+	public int createTask(Task task) {
+		int newCreateTaskId = generateId();
+		task.setId(newCreateTaskId);
+		tasks.put(newCreateTaskId, task);
+		return newCreateTaskId;
+	}
+
+	@Override
+	public int createEpic(Epic epic) {
+		int newCreateEpicId = generateId();
+		epic.setId(newCreateEpicId);
+		epics.put(newCreateEpicId, epic);
+		return newCreateEpicId;
+	}
+
+	@Override
+	public int createSubtask(SubTask subtask) {
+		int newCreateSubtaskId = generateId();
+		subtask.setId(newCreateSubtaskId);
+		Epic epic = epics.get(subtask.getEpicId());
+		if (epic != null) {
+			subTasks.put(newCreateSubtaskId, subtask);
+			epic.setSubtaskId(newCreateSubtaskId);
+			checkStatus(epic);
+			return newCreateSubtaskId;
+		} else {
+			return -1;
 		}
 	}
 
@@ -108,25 +164,32 @@ public class StoringTasks implements TaskManager {
 		if (task == null) {
 			return;
 		}
-		Task removed = this.removeId(task.getId());
+		Task removed = this.removeTaskById(task.getId());
 		if (removed != null) {
 			this.createTask(task);
 		}
 	}
 
 	@Override
-	public Task removeId(int id) { // Удаление по идентификатору.
+	public Task removeTaskById(int id) { // Удаление по идентификатору.
 		Task task = null;
 		if (tasks.containsKey(id)) {
 			task = tasks.remove(id);
+			managersTaskList.remove(id);
 		} else if (epics.containsKey(id)) {
 			task = epics.remove(id);
 			Epic ep = (Epic) task;
 			removeEpicsSubTask(ep.getSubTasks());
+			managersTaskList.remove(id);
 		} else if (subTasks.containsKey(id)) {
 			task = subTasks.remove(id);
 			SubTask sub = (SubTask) task;
 			epics.get(sub.getEpicId()).removeSubtask(sub);
+			updateTask(sub); // обновлен статус эпика
+			managersTaskList.remove(id);
+
+		} else {
+			System.out.println("Задача не найдена!");
 		}
 		return task;
 	}
@@ -142,28 +205,44 @@ public class StoringTasks implements TaskManager {
 		return epic.getSubTasks();
 	}
 
-	private int generateId(Task task) {
-		if (task == null || task.getId() == 0)
-			return generateId();
-		return task.getId();
-	}
+	@Override
+	public void checkStatus(Epic epic) { // Пересмотрена логика обновления статуса эпика, с учетом подзадач
+		if (epics.containsKey(epic.getId())) {
+			if (epic.getSubTasks().size() == 0) {
+				epic.setStatus(TaskStatus.NEW);
+			} else {
+				ArrayList<SubTask> subtasksNew = new ArrayList<>();
+				int next = 0;
+				int former = 0;
 
-	private int generateId() {
-		return ++taskId;
-	}
+				for (int i = 0; i < epic.getSubTasks().size(); i++) {
+					subtasksNew.add(subTasks.get(epic.getSubTasks().get(i)));
+				}
 
-	private TaskStatus checkStatus(Epic epic) { // Узнать статус задачи.
-		ArrayList<SubTask> sub = getEpicSubTask(epic);
-		if (sub.size() == 0) {
-			return TaskStatus.NEW;
-		}
-		TaskStatus status = sub.get(0).getStatus();
-		for (var task : sub) {
-			if (task.getStatus() != status) {
-				return TaskStatus.IN_PROGRESS;
+				for (SubTask subtask : subtasksNew) {
+					if (subtask.getStatus() == TaskStatus.DONE) {
+						next++;
+					}
+					if (subtask.getStatus() == TaskStatus.NEW) {
+						former++;
+					}
+					if (subtask.getStatus() == TaskStatus.IN_PROGRESS) {
+						epic.setStatus(TaskStatus.IN_PROGRESS);
+
+					}
+				}
+
+				if (next == epic.getSubTasks().size()) {
+					epic.setStatus(TaskStatus.DONE);
+				} else if (former == epic.getSubTasks().size()) {
+					epic.setStatus(TaskStatus.NEW);
+				} else {
+					epic.setStatus(TaskStatus.IN_PROGRESS);
+				}
 			}
+		} else {
+			System.out.println("Задача не найденна!");
 		}
-		return status;
 	}
 
 }
