@@ -2,11 +2,11 @@ package manager;
 
 public class Managers {
 
-	public static TaskManager getTaskInMemoryManager() {  //поместить задачу в память
-        return new StoringTasks();
+	public static TaskManager getInMemoryTaskManager(HistoryManager historyManager) {
+        return new InMemoryTaskManager(historyManager);
     }
-	
-    public static ManagersTaskList getHistory() { // хранит историю задач
-        return new InHistoryManager();
+
+    public static HistoryManager getDefaultHistory() {
+        return new InMemoryHistoryManager();
     }
 }

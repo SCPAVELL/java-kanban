@@ -1,5 +1,6 @@
 package task;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Task {
@@ -9,6 +10,8 @@ public class Task {
 	private int id; // Уникальный идентификационный номер задачи
 	private TaskStatus status; // Статус
 	private final TaskType type; // Подзадачи
+    private Instant startTime;
+    private long duration;
 
 	public Task(String title, String description, TaskStatus status, TaskType type) {
 		this.title = title;
@@ -16,6 +19,16 @@ public class Task {
 		this.status = status;
 		this.type = type;
 	}
+	
+	
+	 public Task(String title, String description, TaskStatus status, Instant startTime, long duration) {
+	        this.title = title;
+	        this.description = description;
+	        this.status = status;
+	        this.startTime = startTime;
+	        this.duration = duration;
+			this.type = null;
+	    }
 
 	public TaskStatus getStatus() {
 		return status;
@@ -55,6 +68,11 @@ public class Task {
 	public int hashCode() {
 		return Objects.hash(description, id, status, title, type);
 	}
+	
+	public Instant getEndTime() {
+        long SECONDS_IN_MINUTE = 60L;
+        return startTime.plusSeconds(duration * SECONDS_IN_MINUTE);
+    }
 
 	@Override
 	public boolean equals(Object obj) {

@@ -10,22 +10,20 @@ import task.SubTask;
 import task.Task;
 import task.TaskStatus;
 
-public class StoringTasks implements TaskManager {
+public class InMemoryTaskManager  implements TaskManager {
 
-	private int taskId;
-	private final HashMap<Integer, Task> tasks;
-	private final HashMap<Integer, Epic> epics;
-	private final HashMap<Integer, SubTask> subTasks;
-	private final ManagersTaskList managersTaskList;
+	private int taskId = 0;
+	private final HashMap<Integer, Task> tasks = new HashMap<>();
+	private final HashMap<Integer, Epic> epics = new HashMap<>();
+	private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+	private final HistoryManager  historyManager;
 
-	public StoringTasks() {
-
-		this.taskId = 0;
-		this.tasks = new HashMap<>();
-		this.epics = new HashMap<>();
-		this.subTasks = new HashMap<>();
-		this.managersTaskList = Managers.getHistory();
-	}
+	
+	
+	
+	public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
 
 	private int generateId() {
 		return ++taskId;
@@ -33,19 +31,19 @@ public class StoringTasks implements TaskManager {
 
 	@Override
 	public Task getTaskById(int id) { // получить задачу по ID
-		managersTaskList.add(tasks.get(id));
+		historyManager.add(tasks.get(id));
 		return tasks.get(id);
 	}
 
 	@Override
 	public Epic getEpicById(int id) { // получить эпик по ID
-		managersTaskList.add(epics.get(id));
+		historyManager.add(epics.get(id));
 		return epics.get(id);
 	}
 
 	@Override
 	public SubTask getSubtaskById(int id) { // получить подзадачу по ID
-		managersTaskList.add(subTasks.get(id));
+		historyManager.add(subTasks.get(id));
 		return subTasks.get(id);
 	}
 
@@ -93,13 +91,11 @@ public class StoringTasks implements TaskManager {
 		}
 	}
 
-	public ManagersTaskList getManagersTaskList() {
-		return managersTaskList;
-	}
+	
 
 	@Override
 	public List<Task> getHistory() {
-		return managersTaskList.getHistory(); // Получить запись событий.
+		return historyManager.getHistory(); // Получить запись событий.
 	}
 
 	@Override
@@ -107,13 +103,13 @@ public class StoringTasks implements TaskManager {
 		Task task = null;
 		if (tasks.containsKey(taskId)) {
 			task = tasks.get(taskId);
-			managersTaskList.add(task);
+			historyManager.add(task);
 		} else if (epics.containsKey(taskId)) {
 			task = epics.get(taskId);
-			managersTaskList.add(task);
+			historyManager.add(task);
 		} else if (subTasks.containsKey(taskId)) {
 			task = subTasks.get(taskId);
-			managersTaskList.add(task);
+			historyManager.add(task);
 		}
 		return task;
 	}
@@ -155,6 +151,7 @@ public class StoringTasks implements TaskManager {
 			checkStatus(epic);
 			return newCreateSubtaskId;
 		} else {
+			System.out.println("Epic не найден");
 			return -1;
 		}
 	}
@@ -162,31 +159,45 @@ public class StoringTasks implements TaskManager {
 	@Override
 	public void updateTask(Task task) { // Новая версия задачи.
 		if (task == null) {
-			return;
+			System.out.println("Task не найдена");
 		}
 		Task removed = this.removeTaskById(task.getId());
 		if (removed != null) {
 			this.createTask(task);
 		}
 	}
+	
+	
+	@Override
+    public void updateSubTask(SubTask subtask) {	// Новая версия подзадачи.
+        if (subtask != null && subTasks.containsKey(subtask.getId())) {
+            
+            subTasks.put(subtask.getId(), subtask);
+            Epic epic = epics.get(subtask.getEpicId());
+            checkStatus(epic);
+           
+        } else {
+            System.out.println("Subtask не найдена");
+        }
+    }
 
 	@Override
 	public Task removeTaskById(int id) { // Удаление по идентификатору.
 		Task task = null;
 		if (tasks.containsKey(id)) {
 			task = tasks.remove(id);
-			managersTaskList.remove(id);
+			historyManager.remove(id);
 		} else if (epics.containsKey(id)) {
 			task = epics.remove(id);
 			Epic ep = (Epic) task;
 			removeEpicsSubTask(ep.getSubTasks());
-			managersTaskList.remove(id);
+			historyManager.remove(id);
 		} else if (subTasks.containsKey(id)) {
 			task = subTasks.remove(id);
 			SubTask sub = (SubTask) task;
 			epics.get(sub.getEpicId()).removeSubtask(sub);
 			updateTask(sub); // обновлен статус эпика
-			managersTaskList.remove(id);
+			historyManager.remove(id);
 
 		} else {
 			System.out.println("Задача не найдена!");

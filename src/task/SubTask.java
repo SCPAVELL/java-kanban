@@ -1,5 +1,7 @@
 package task;
 
+import java.time.Instant;
+
 public class SubTask extends Task {
 
 	private final int epicId;
@@ -11,6 +13,11 @@ public class SubTask extends Task {
 
 	public int getEpicId() {
 		return epicId;
+	}
+
+	public SubTask(String description, String name, TaskStatus status, int epicId, Instant startTime, long duration) {
+		super(description, name, status, startTime, duration);
+		this.epicId = epicId;
 	}
 
 	@Override

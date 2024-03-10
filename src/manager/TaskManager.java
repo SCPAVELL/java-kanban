@@ -27,6 +27,8 @@ public interface TaskManager {
 
 	void updateTask(Task task); // Новая версия объекта
 
+	void updateSubTask(SubTask subtask); // Новая версия подзадачи
+
 	Task removeTaskById(int id); // Удаление по идентификатору.
 
 	ArrayList<SubTask> getEpicSubTask(Epic epic); // Получение списка всех подзадач определённого эпика.
