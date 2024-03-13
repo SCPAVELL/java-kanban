@@ -11,12 +11,22 @@ import org.junit.jupiter.api.Test;
 
 import manager.HistoryManager;
 import manager.InMemoryHistoryManager;
+import manager.Managers;
+import manager.TaskManager;
+import task.Epic;
+import task.SubTask;
 import task.Task;
 import task.TaskStatus;
 
-public class InMemoryHistoryManagerTest {
+class InMemoryHistoryManagerTest{
 
 	HistoryManager manager;
+    
+    @BeforeEach
+	public void beforeEach() {
+		manager = Managers.getDefaultHistory();
+	}
+    
 	private int id = 0;
 
 	public int generateId() {
@@ -27,10 +37,7 @@ public class InMemoryHistoryManagerTest {
 		return new Task("Description", "Title", TaskStatus.NEW, Instant.now(), 0);
 	}
 
-	@BeforeEach
-	public void beforeEach() {
-		manager = new InMemoryHistoryManager();
-	}
+	
 
 	/*
 	 * Метод shouldAddTasksToHistory() проверяет, что задачи добавляются в историю.
@@ -38,9 +45,10 @@ public class InMemoryHistoryManagerTest {
 	 * (manager). Затем он проверяет, что история менеджера содержит все эти три
 	 * задачи, используя метод getHistory().
 	 * 
-	 * Метод shouldRemoveTask() проверяет, что задача с заданным идентификатором (в данном случае
-	 * task2.getId()) удаляется из менеджера задач. После вызова метода remove() в
-	 * менеджере задач должны остаться только задачи task1 и task3.
+	 * Метод shouldRemoveTask() проверяет, что задача с заданным идентификатором (в
+	 * данном случае task2.getId()) удаляется из менеджера задач. После вызова
+	 * метода remove() в менеджере задач должны остаться только задачи task1 и
+	 * task3.
 	 * 
 	 */
 	@Test
@@ -77,8 +85,9 @@ public class InMemoryHistoryManagerTest {
 		manager.remove(task2.getId());
 		assertEquals(List.of(task1, task3), manager.getHistory());
 	}
-	
-	//Тест проверяет, что после удаления задачи из менеджера задач, история в менеджере становится пустой.
+
+	// Тест проверяет, что после удаления задачи из менеджера задач, история в
+	// менеджере становится пустой.
 	@Test
 	public void shouldRemoveOnlyOneTask() {
 		Task task = createTask();
@@ -88,8 +97,9 @@ public class InMemoryHistoryManagerTest {
 		manager.remove(task.getId());
 		assertEquals(Collections.EMPTY_LIST, manager.getHistory());
 	}
-	
-	//Тест проверяет, что если удалить все задачи из менеджера, то его история становится пустой.
+
+	// Тест проверяет, что если удалить все задачи из менеджера, то его история
+	// становится пустой.
 	@Test
 	public void shouldHistoryIsEmpty() {
 		Task task1 = createTask();
