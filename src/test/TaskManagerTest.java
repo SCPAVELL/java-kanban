@@ -1,15 +1,12 @@
 package test;
 
-import static org.junit.Assert.assertTrue;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
 
 import manager.TaskManager;
 import task.Epic;
