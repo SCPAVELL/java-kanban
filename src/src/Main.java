@@ -1,8 +1,12 @@
 package src;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 import manager.InMemoryTaskManager;
+import manager.Managers;
+import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
@@ -12,34 +16,41 @@ import task.TaskType;
 public class Main {
 
 	public static void main(String[] args) {
-		/*
-		 * InMemoryTaskManager st = new InMemoryTaskManager(null); // String title,
-		 * String description, TaskStatus status, TaskType type Epic epic1 = new
-		 * Epic("Эпик-1", "Description", TaskStatus.NEW, TaskType.EPIC);
-		 * 
-		 * // String title, String description, TaskStatus status, TaskType type, int
-		 * epicId Task subtask1 = new SubTask("Эпик - 1 Подзадача - 1", "Description",
-		 * TaskStatus.DONE, TaskType.SUBTASK, 1); Task subtask2 = new
-		 * SubTask("Эпик - 1 Подзадача - 2", "Description", TaskStatus.DONE,
-		 * TaskType.SUBTASK, 1);
-		 * 
-		 * 
-		 * st.createTask(epic1); st.createTask(subtask1); st.createTask(subtask2);
-		 * 
-		 * st.getTask(1); st.getTask(2); st.getTask(3);
-		 * 
-		 * 
-		 * Epic epic2 = new Epic("Эпик-2", "Description", TaskStatus.NEW,
-		 * TaskType.EPIC); Task subtask3 = new SubTask("Эпик - 2 Подзадача - 1",
-		 * "Description", TaskStatus.IN_PROGRESS, TaskType.SUBTASK, 4);
-		 * 
-		 * st.createTask(epic2); st.createTask(subtask3);
-		 * 
-		 * st.getTask(4); st.getTask(5);
-		 * 
-		 * System.out.println("Выполненные действия: ");
-		 * System.out.println(st.getHistory());
-		 * 
-		 */
+		TaskManager manager = Managers.getInMemoryTaskManager(Managers.getDefaultHistory());
+
+		System.out.println("!!!Пользовательский сценарий!!!");
+		manager.createTask(new Task("Description - 1", "Title - 1", TaskStatus.NEW, Instant.now(), 0));
+		manager.createTask(new Task("Description - 2", "Title - 2", TaskStatus.NEW, Instant.now(), 0));
+		manager.createEpic(new Epic("Description - 1", "Epic - 1", TaskStatus.NEW, Instant.now(), 0));
+		manager.createTask(new Epic("Description - 1", "Epic - 2", TaskStatus.NEW, Instant.now(), 0));
+		manager.createSubtask(new SubTask("SubTask - 1", "Description - 1", TaskStatus.DONE, TaskType.EPIC, 3));
+		manager.createSubtask(new SubTask("SubTask - 2", "Description - 2", TaskStatus.DONE, TaskType.EPIC, 3));
+		manager.createSubtask(new SubTask("SubTask - 3", "Description - 3", TaskStatus.DONE, TaskType.EPIC, 3));
+
+		System.out.println("!!!Запрос созданных задач несколько раз в разном порядке!!!");
+		manager.getTaskById(1);
+		manager.getEpicById(3);
+		manager.getEpicById(3);
+		manager.getEpicById(3);
+		manager.getTaskById(1);
+		manager.getEpicById(4);
+		manager.getSubtaskById(5);
+		manager.getSubtaskById(5);
+		manager.getSubtaskById(6);
+		manager.getSubtaskById(7);
+
+		System.out.println("!!!История запросов!!!");
+		List<Task> history = manager.getHistory();
+		System.out.println(history);
+		
+		System.out.println("!!!Удаление задачи и подзадачи из истории!!");
+		manager.removeTaskById(1);
+		manager.removeTaskById(3);
+		
+		
+		System.out.println("!!!История запросов после удаления!!!");
+		List<Task> historyDeleted = manager.getHistory();
+		System.out.println(historyDeleted);
+	
 	}
 }
