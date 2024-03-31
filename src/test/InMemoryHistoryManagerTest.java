@@ -5,28 +5,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import manager.HistoryManager;
-import manager.InMemoryHistoryManager;
 import manager.Managers;
-import manager.TaskManager;
-import task.Epic;
-import task.SubTask;
 import task.Task;
 import task.TaskStatus;
 
-class InMemoryHistoryManagerTest{
+class InMemoryHistoryManagerTest {
 
 	HistoryManager manager;
-    
-    @BeforeEach
+
+	@BeforeEach
 	public void beforeEach() {
 		manager = Managers.getDefaultHistory();
 	}
-    
+
 	private int id = 0;
 
 	public int generateId() {
@@ -36,8 +30,6 @@ class InMemoryHistoryManagerTest{
 	protected Task createTask() {
 		return new Task("Description", "Title", TaskStatus.NEW, Instant.now(), 0);
 	}
-
-	
 
 	/*
 	 * Метод shouldAddTasksToHistory() проверяет, что задачи добавляются в историю.
