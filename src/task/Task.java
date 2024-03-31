@@ -69,8 +69,8 @@ public class Task {
 	}
 
 	public Instant getEndTime() {
-		long SecondsInMinune = 60L;
-		return startTime.plusSeconds(duration * SecondsInMinune);
+		long secondsInMinute = 60L;
+		return startTime.plusSeconds(duration * secondsInMinute);
 	}
 
 	@Override
