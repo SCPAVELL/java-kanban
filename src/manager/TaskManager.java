@@ -2,12 +2,9 @@ package manager;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import task.Epic;
 import task.SubTask;
 import task.Task;
-import task.TaskStatus;
-import task.TaskType;
 
 public interface TaskManager {
 
@@ -29,7 +26,7 @@ public interface TaskManager {
 
 	void updateSubTask(SubTask subtask); // Новая версия подзадачи
 
-	void updateEpic(Epic epic);	// Новая версия эпика
+	void updateEpic(Epic epic); // Новая версия эпика
 
 	Task removeTaskById(int id); // Удаление по идентификатору.
 

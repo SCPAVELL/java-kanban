@@ -1,10 +1,8 @@
 package src;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-import manager.InMemoryTaskManager;
+import java.util.List;
 import manager.Managers;
 import manager.TaskManager;
 import task.Epic;
@@ -42,15 +40,14 @@ public class Main {
 		System.out.println("!!!История запросов!!!");
 		List<Task> history = manager.getHistory();
 		System.out.println(history);
-		
+
 		System.out.println("!!!Удаление задачи и подзадачи из истории!!");
 		manager.removeTaskById(1);
 		manager.removeTaskById(3);
-		
-		
+
 		System.out.println("!!!История запросов после удаления!!!");
 		List<Task> historyDeleted = manager.getHistory();
 		System.out.println(historyDeleted);
-	
+
 	}
 }
