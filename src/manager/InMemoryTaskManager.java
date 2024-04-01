@@ -27,12 +27,6 @@ public class InMemoryTaskManager implements TaskManager {
 	}
 
 	@Override
-	public Task getTaskById(int id) { // получить задачу по ID
-		historyManager.add(tasks.get(id));
-		return tasks.get(id);
-	}
-
-	@Override
 	public Epic getEpicById(int id) { // получить эпик по ID
 		historyManager.add(epics.get(id));
 		return epics.get(id);

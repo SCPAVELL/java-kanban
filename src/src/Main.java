@@ -26,11 +26,11 @@ public class Main {
 		manager.createSubtask(new SubTask("SubTask - 3", "Description - 3", TaskStatus.DONE, TaskType.EPIC, 3));
 
 		System.out.println("!!!Запрос созданных задач несколько раз в разном порядке!!!");
-		manager.getTaskById(1);
+		manager.getTask(1);
 		manager.getEpicById(3);
 		manager.getEpicById(3);
 		manager.getEpicById(3);
-		manager.getTaskById(1);
+		manager.getTask(1);
 		manager.getEpicById(4);
 		manager.getSubtaskById(5);
 		manager.getSubtaskById(5);

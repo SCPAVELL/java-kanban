@@ -15,12 +15,6 @@ import task.TaskStatus;
 class InMemoryHistoryManagerTest {
 
 	HistoryManager manager;
-
-	@BeforeEach
-	public void beforeEach() {
-		manager = Managers.getDefaultHistory();
-	}
-
 	private int id = 0;
 
 	public int generateId() {
@@ -29,6 +23,11 @@ class InMemoryHistoryManagerTest {
 
 	protected Task createTask() {
 		return new Task("Description", "Title", TaskStatus.NEW, Instant.now(), 0);
+	}
+
+	@BeforeEach
+	public void beforeEach() {
+		manager = Managers.getDefaultHistory();
 	}
 
 	/*
@@ -105,6 +104,18 @@ class InMemoryHistoryManagerTest {
 		manager.remove(task2.getId());
 		manager.remove(task3.getId());
 		assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+	}
+
+	// тест проверяет, что менеджер задач не удаляет задачу с некорректным
+	// идентификатором
+	@Test
+	public void shouldNotRemoveTaskWithBadId() {
+		Task task = createTask();
+		int newTaskId = generateId();
+		task.setId(newTaskId);
+		manager.add(task);
+		manager.remove(0);
+		assertEquals(List.of(task), manager.getHistory());
 	}
 
 }

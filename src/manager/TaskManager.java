@@ -8,8 +8,6 @@ import task.Task;
 
 public interface TaskManager {
 
-	Task getTaskById(int id); // получить задачу по ID
-
 	Epic getEpicById(int id); // получить эпик по ID
 
 	SubTask getSubtaskById(int id); // получить подзадачу по ID

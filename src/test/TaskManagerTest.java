@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-
 import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
@@ -99,7 +98,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		manager.createTask(task);
 		task.setStatus(TaskStatus.IN_PROGRESS);
 		manager.updateTask(task);
-		assertEquals(TaskStatus.IN_PROGRESS, manager.getTaskById(task.getId()).getStatus());
+		assertEquals(TaskStatus.IN_PROGRESS, manager.getTask(task.getId()).getStatus());
 	}
 
 	@Test
@@ -116,7 +115,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		manager.createTask(task);
 		task.setStatus(TaskStatus.DONE);
 		manager.updateTask(task);
-		assertEquals(TaskStatus.DONE, manager.getTaskById(task.getId()).getStatus());
+		assertEquals(TaskStatus.DONE, manager.getTask(task.getId()).getStatus());
 	}
 
 	@Test
@@ -132,7 +131,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		Task task = createTask();
 		manager.createTask(task);
 		manager.removeTasks();
-		;
 		assertEquals(Collections.EMPTY_LIST, manager.getAllTasks());
 	}
 
@@ -209,7 +207,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	@Test
 	public void shouldDoNothingIfEpicHashMapIsEmpty() {
 		manager.removeEpics();
-		;
 		manager.removeTaskById(999);
 		assertTrue(manager.getAllEpics().isEmpty());
 	}
@@ -224,6 +221,28 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	@Test
 	public void shouldReturnEmptyHistory() {
 		assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+	}
+
+	@Test
+	public void shouldReturnEmptyHistoryIfTasksNotExist() {
+		manager.getTask(999);
+		manager.getSubtaskById(999);
+		manager.getEpicById(999);
+		assertTrue(manager.getHistory().isEmpty());
+	}
+
+	@Test
+	public void shouldReturnHistoryWithTasks() {
+		Epic epic = createEpic();
+		manager.createEpic(epic);
+		SubTask subtask = createSubtask(epic);
+		manager.createSubtask(subtask);
+		manager.getEpicById(epic.getId());
+		manager.getSubtaskById(subtask.getId());
+		List<Task> list = manager.getHistory();
+		assertEquals(2, list.size());
+		assertTrue(list.contains(subtask));
+		assertTrue(list.contains(epic));
 	}
 
 }
