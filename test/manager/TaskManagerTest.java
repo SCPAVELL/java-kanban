@@ -46,6 +46,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		assertEquals(TaskStatus.NEW, task.getStatus());
 		assertEquals(List.of(task), tasks);
 	}
+	
 
 	/*
 	 * Метод shouldCreateEpic() создает эпик с помощью createEpic() и затем
