@@ -57,6 +57,22 @@ public class Task {
 		return type;
 	}
 
+	public Instant getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Instant startTime) {
+		this.startTime = startTime;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [title=" + title + ", description=" + description + ", id=" + id + ", status=" + status + ", type="
