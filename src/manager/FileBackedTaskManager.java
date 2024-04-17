@@ -31,6 +31,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		this.file = file;
 	}
 
+	// Метод сохраняет текущее состояние всех задач, эпиков, подзадач и истории в
+	// файл в формате CSV.
 	public void save() {
 		try {
 			if (Files.exists(file.toPath())) {
@@ -63,13 +65,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		}
 	}
 
+	// возвращает ID эпика, к которому принадлежит задача
 	private String getEpicId(Task task) {
 		if (task instanceof SubTask) {
 			return Integer.toString(((SubTask) task).getEpicId());
 		}
-		return "-1";
+		return "";
 	}
 
+	// определяет тип задачи
 	private TaskType getType(Task task) {
 		if (task instanceof Epic) {
 			return TaskType.EPIC;
@@ -79,6 +83,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		return TaskType.TASK;
 	}
 
+	// преобразует задачу в строку в формате CSV
 	private String toString(Task task) {
 		String[] toJoin = { Integer.toString(task.getId()), getType(task).toString(), task.getTitle(),
 				task.getStatus().toString(), task.getDescription(), String.valueOf(task.getStartTime()),
@@ -86,6 +91,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		return String.join(",", toJoin);
 	}
 
+	// преобразует строку в задачу.
 	private Task fromString(String value) {
 		String[] params = value.split(",");
 		int id = Integer.parseInt(params[0]);
@@ -114,6 +120,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		}
 	}
 
+	// загружает данные из файла, создавая задачи, эпики, подзадачи и историю.
 	public void fileFromLoad() {
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
 
@@ -177,6 +184,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		return subtask;
 	}
 
+	public Task removeTaskById(int id) {
+		super.removeTaskById(id);
+		save();
+		return removeTaskById(id);
+	}
+
 	@Override
 	public void removeTasks() {
 		super.removeTasks();
@@ -226,22 +239,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 	public int createTask(Task task) {
 		super.createTask(task);
 		save();
-		return task;
+		return createTask(task);
 	}
 
 	@Override
 	public int createEpic(Epic epic) {
-		// TODO Auto-generated method stub
-		return 0;
+		super.createEpic(epic);
+		save();
+		return createEpic(epic);
 	}
 
 	@Override
 	public int createSubtask(SubTask subtask) {
-		// TODO Auto-generated method stub
-		return 0;
+		super.createSubtask(subtask);
+		save();
+		return createSubtask(subtask);
 	}
 
-	// Метод для сохранения истории в CSV
+	// преобразует историю задач в строку для сохранения в CSV формате.
 	static String historyToString(HistoryManager manager) {
 		List<Task> history = manager.getHistory();
 		StringBuilder str = new StringBuilder();
@@ -261,7 +276,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 		return str.toString();
 	}
 
-	// Метод восстановления менеджера истории из CSV
+	// восстанавливает историю задач из строки в формате CSV.
 	static List<Integer> historyFromString(String value) {
 		List<Integer> toReturn = new ArrayList<>();
 		if (value != null) {
