@@ -1,9 +1,9 @@
 package manager;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputFilter.Status;
 import java.nio.charset.StandardCharsets;
@@ -34,16 +34,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 	// Метод сохраняет текущее состояние всех задач, эпиков, подзадач и истории в
 	// файл в формате CSV.
 	public void save() {
-		try {
-			if (Files.exists(file.toPath())) {
-				Files.delete(file.toPath());
-			}
-			Files.createFile(file.toPath());
-		} catch (IOException e) {
-			throw new ManagerSaveException("Не удалось найти файл для записи данных");
-		}
-
-		try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+		try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
 			writer.write(CSV_FILE);
 
 			for (Task task : getAllTasks()) {
@@ -61,7 +52,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 			writer.write("\n");
 			writer.write(historyToString(getHistoryManager()));
 		} catch (IOException e) {
-			throw new ManagerSaveException("Не удалось сохранить в файл", e);
+			throw new ManagerSaveException("Не удалось сохранить данные в файл " + file.getName(), e);
 		}
 	}
 
@@ -147,7 +138,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 				addToHistory(id);
 			}
 		} catch (IOException e) {
-			throw new ManagerSaveException("Данные не найдены!");
+			throw new ManagerSaveException("Данные не найдены!", e);
 		}
 	}
 
