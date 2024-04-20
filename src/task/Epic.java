@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Epic extends Task {
 
-	private final List<SubTask> subTasks = new ArrayList<>();;
+	private final List<SubTask> subTasks = new ArrayList<>();
 	private final List<Integer> subTaskIds = new ArrayList<>();
 	private Instant endTime;
 

@@ -27,12 +27,6 @@ public class InMemoryTaskManager implements TaskManager {
 	}
 
 	@Override
-	public Task getTaskById(int id) { // получить задачу по ID
-		historyManager.add(tasks.get(id));
-		return tasks.get(id);
-	}
-
-	@Override
 	public Epic getEpicById(int id) { // получить эпик по ID
 		historyManager.add(epics.get(id));
 		return epics.get(id);
@@ -209,6 +203,10 @@ public class InMemoryTaskManager implements TaskManager {
 		return task;
 	}
 
+	public HistoryManager getHistoryManager() {
+		return historyManager;
+	}
+
 	private void removeEpicsSubTask(ArrayList<SubTask> subTasks) { // Удаление задачи.
 		for (var sub : subTasks) {
 			this.subTasks.remove(sub.getId());
@@ -218,6 +216,16 @@ public class InMemoryTaskManager implements TaskManager {
 	@Override
 	public ArrayList<SubTask> getEpicSubTask(Epic epic) { // Получение задачи.
 		return epic.getSubTasks();
+	}
+
+	public void addToHistory(int id) {
+		if (epics.containsKey(id)) {
+			historyManager.add(epics.get(id));
+		} else if (subTasks.containsKey(id)) {
+			historyManager.add(subTasks.get(id));
+		} else if (tasks.containsKey(id)) {
+			historyManager.add(tasks.get(id));
+		}
 	}
 
 	@Override

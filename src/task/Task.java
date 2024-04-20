@@ -10,8 +10,8 @@ public class Task {
 	private int id; // Уникальный идентификационный номер задачи
 	private TaskStatus status; // Статус
 	private final TaskType type; // Подзадачи
-    private Instant startTime;
-    private long duration;
+	private Instant startTime;
+	private long duration;
 
 	public Task(String title, String description, TaskStatus status, TaskType type) {
 		this.title = title;
@@ -19,16 +19,15 @@ public class Task {
 		this.status = status;
 		this.type = type;
 	}
-	
-	
-	 public Task(String title, String description, TaskStatus status, Instant startTime, long duration) {
-	        this.title = title;
-	        this.description = description;
-	        this.status = status;
-	        this.startTime = startTime;
-	        this.duration = duration;
-			this.type = null;
-	    }
+
+	public Task(String title, String description, TaskStatus status, Instant startTime, long duration) {
+		this.title = title;
+		this.description = description;
+		this.status = status;
+		this.startTime = startTime;
+		this.duration = duration;
+		this.type = null;
+	}
 
 	public TaskStatus getStatus() {
 		return status;
@@ -58,6 +57,22 @@ public class Task {
 		return type;
 	}
 
+	public Instant getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Instant startTime) {
+		this.startTime = startTime;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
 	@Override
 	public String toString() {
 		return "Task [title=" + title + ", description=" + description + ", id=" + id + ", status=" + status + ", type="
@@ -68,11 +83,11 @@ public class Task {
 	public int hashCode() {
 		return Objects.hash(description, id, status, title, type);
 	}
-	
+
 	public Instant getEndTime() {
-        long SECONDS_IN_MINUTE = 60L;
-        return startTime.plusSeconds(duration * SECONDS_IN_MINUTE);
-    }
+		long secondsInMinute = 60L;
+		return startTime.plusSeconds(duration * secondsInMinute);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
