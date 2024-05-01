@@ -281,7 +281,6 @@ public class InMemoryTaskManager implements TaskManager {
 	 * prioritizedTasks. getPrioritizedTasks() создает список задач
 	 * prioritizedTasks, используя метод stream() для преобразования коллекции в
 	 * поток, и метод toList() для преобразования потока в список.
-	 * 
 	 */
 	public boolean checkTime(Task task) {
 		List<Task> tasks = List.copyOf(prioritizedTasks);
