@@ -2,8 +2,11 @@ package manager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import task.Epic;
 import task.SubTask;
@@ -17,6 +20,8 @@ public class InMemoryTaskManager implements TaskManager {
 	private final HashMap<Integer, Epic> epics = new HashMap<>();
 	private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 	private final HistoryManager historyManager;
+	private final Comparator<Task> taskComparator = Comparator.comparing(Task::getStartTime);
+	protected Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
 
 	public InMemoryTaskManager(HistoryManager historyManager) {
 		this.historyManager = historyManager;
@@ -266,6 +271,55 @@ public class InMemoryTaskManager implements TaskManager {
 		} else {
 			System.out.println("Задача не найденна!");
 		}
+	}
+
+	/**
+	 * checkTime(Task task) проверяет, свободно ли время для выполнения задачи task.
+	 * Он сравнивает время начала и окончания задачи task с временем начала и
+	 * окончания других задач, хранящихся в списке prioritizedTasks.
+	 * validateTaskPriority() проверяет приоритет задач, хранящихся в списке
+	 * prioritizedTasks. getPrioritizedTasks() создает список задач
+	 * prioritizedTasks, используя метод stream() для преобразования коллекции в
+	 * поток, и метод toList() для преобразования потока в список.
+	 * 
+	 */
+	public boolean checkTime(Task task) {
+		List<Task> tasks = List.copyOf(prioritizedTasks);
+		int sizeTimeNull = 0;
+		if (tasks.size() > 0) {
+			for (Task taskSave : tasks) {
+				if (taskSave.getStartTime() != null && taskSave.getEndTime() != null) {
+					if (task.getStartTime().isBefore(taskSave.getStartTime())
+							&& task.getEndTime().isBefore(taskSave.getStartTime())) {
+						return true;
+					} else if (task.getStartTime().isAfter(taskSave.getEndTime())
+							&& task.getEndTime().isAfter(taskSave.getEndTime())) {
+						return true;
+					}
+				} else {
+					sizeTimeNull++;
+				}
+
+			}
+			return sizeTimeNull == tasks.size();
+		} else {
+			return true;
+		}
+	}
+
+	private void validateTaskPriority() {
+		List<Task> tasks = getPrioritizedTasks();
+
+		for (int i = 1; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+
+			boolean taskHasIntersections = checkTime(task);
+
+		}
+	}
+
+	private List<Task> getPrioritizedTasks() {
+		return prioritizedTasks.stream().toList();
 	}
 
 }

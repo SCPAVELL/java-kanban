@@ -10,8 +10,8 @@ public class Task {
 	private int id; // Уникальный идентификационный номер задачи
 	private TaskStatus status; // Статус
 	private final TaskType type; // Подзадачи
-	private Instant startTime;
-	private long duration;
+	private Instant startTime; // Время старта выполнения задачи
+	private long duration; // Продолжительность задачи
 
 	public Task(String title, String description, TaskStatus status, TaskType type) {
 		this.title = title;
