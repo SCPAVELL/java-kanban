@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
-import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
