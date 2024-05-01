@@ -1,5 +1,6 @@
 package manager;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -125,6 +126,7 @@ public class InMemoryTaskManager implements TaskManager {
 	public int createTask(Task task) {
 		int newCreateTaskId = generateId();
 		task.setId(newCreateTaskId);
+		addNewPrioritizedTask(task);
 		tasks.put(newCreateTaskId, task);
 		return newCreateTaskId;
 	}
@@ -143,6 +145,7 @@ public class InMemoryTaskManager implements TaskManager {
 		subtask.setId(newCreateSubtaskId);
 		Epic epic = epics.get(subtask.getEpicId());
 		if (epic != null) {
+			addNewPrioritizedTask(subtask);
 			subTasks.put(newCreateSubtaskId, subtask);
 			epic.setSubtaskId(newCreateSubtaskId);
 			checkStatus(epic);
@@ -156,6 +159,7 @@ public class InMemoryTaskManager implements TaskManager {
 	@Override
 	public void updateTask(Task task) { // Новая версия задачи.
 		if (task != null && tasks.containsKey(task.getId())) {
+			addNewPrioritizedTask(task);
 			tasks.put(task.getId(), task);
 		} else {
 			System.out.println("Task не найдена");
@@ -165,7 +169,7 @@ public class InMemoryTaskManager implements TaskManager {
 	@Override
 	public void updateSubTask(SubTask subtask) { // Новая версия подзадачи.
 		if (subtask != null && subTasks.containsKey(subtask.getId())) {
-
+			addNewPrioritizedTask(subtask);
 			subTasks.put(subtask.getId(), subtask);
 			Epic epic = epics.get(subtask.getEpicId());
 			checkStatus(epic);
@@ -273,50 +277,60 @@ public class InMemoryTaskManager implements TaskManager {
 		}
 	}
 
-	/**
-	 * checkTime(Task task) проверяет, свободно ли время для выполнения задачи task.
-	 * Он сравнивает время начала и окончания задачи task с временем начала и
-	 * окончания других задач, хранящихся в списке prioritizedTasks.
-	 * validateTaskPriority() проверяет приоритет задач, хранящихся в списке
-	 * prioritizedTasks. getPrioritizedTasks() создает список задач
-	 * prioritizedTasks, используя метод stream() для преобразования коллекции в
-	 * поток, и метод toList() для преобразования потока в список.
-	 */
-	public boolean checkTime(Task task) {
-		List<Task> tasks = List.copyOf(prioritizedTasks);
-		int sizeTimeNull = 0;
-		if (tasks.size() > 0) {
-			for (Task taskSave : tasks) {
-				if (taskSave.getStartTime() != null && taskSave.getEndTime() != null) {
-					if (task.getStartTime().isBefore(taskSave.getStartTime())
-							&& task.getEndTime().isBefore(taskSave.getStartTime())) {
-						return true;
-					} else if (task.getStartTime().isAfter(taskSave.getEndTime())
-							&& task.getEndTime().isAfter(taskSave.getEndTime())) {
-						return true;
-					}
-				} else {
-					sizeTimeNull++;
-				}
+	// обновляет время начала (startTime), время конца (endTime) и длительность
+	// (duration) задачи epic на основе времени начала и конца всех подзадач этой
+	// эпической задачи.
+	public void updateTimeEpic(Epic epic) {
+		List<SubTask> subtasks = getAllSubtasks();
+		Instant startTime = subtasks.get(0).getStartTime();
+		Instant endTime = subtasks.get(0).getEndTime();
 
-			}
-			return sizeTimeNull == tasks.size();
-		} else {
+		for (SubTask subtask : subtasks) {
+			if (subtask.getStartTime().isBefore(startTime))
+				startTime = subtask.getStartTime();
+			if (subtask.getEndTime().isAfter(endTime))
+				endTime = subtask.getEndTime();
+		}
+
+		epic.setStartTime(startTime);
+		epic.setEndTime(endTime);
+		long duration = (endTime.toEpochMilli() - startTime.toEpochMilli());
+		epic.setDuration(duration);
+	}
+
+	// проверяет, можно ли добавить новую задачу task в список приоритетных задач
+	// (prioritizedTasks) без пересечения временных интервалов с другими задачами.
+	public boolean checkTime(Task task) {
+		if (prioritizedTasks.isEmpty()) {
 			return true;
 		}
+		return prioritizedTasks.stream()
+				.allMatch(taskSave -> taskSave.getStartTime() == null || taskSave.getEndTime() == null
+						|| task.getStartTime().isAfter(taskSave.getEndTime())
+						|| task.getEndTime().isBefore(taskSave.getStartTime()));
 	}
 
+	// проверяет временные интервалы между задачами в списке приоритетных задач и
+	// выбрасывает исключение, если обнаружено пересечение временных интервалов.
 	private void validateTaskPriority() {
 		List<Task> tasks = getPrioritizedTasks();
-
-		for (int i = 1; i < tasks.size(); i++) {
+		for (int i = 1; i < prioritizedTasks.size(); i++) {
 			Task task = tasks.get(i);
-
-			boolean taskHasIntersections = checkTime(task);
-
+			if (!checkTime(task)) {
+				throw new ManagerException(
+						"Задачи #" + task.getId() + " и #" + tasks.get(i - 1).getId() + " пересекаются");
+			}
 		}
 	}
 
+	// вызывает метод validateTaskPriority() для проверки временных интервалов между
+	// задачами.
+	private void addNewPrioritizedTask(Task task) {
+		prioritizedTasks.add(task);
+		validateTaskPriority();
+	}
+
+//возвращает список приоритетных задач (prioritizedTasks) в виде списка.
 	private List<Task> getPrioritizedTasks() {
 		return prioritizedTasks.stream().toList();
 	}

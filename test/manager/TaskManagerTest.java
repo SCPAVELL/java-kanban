@@ -46,7 +46,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		assertEquals(TaskStatus.NEW, task.getStatus());
 		assertEquals(List.of(task), tasks);
 	}
-	
 
 	/*
 	 * Метод shouldCreateEpic() создает эпик с помощью createEpic() и затем
@@ -120,11 +119,37 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	}
 
 	@Test
+	public void shouldNotUpdateTaskIfNull() {
+		Task task = createTask();
+		manager.createTask(task);
+		manager.updateTask(null);
+		assertEquals(task, manager.getTask(task.getId()));
+	}
+
+	@Test
 	public void shouldUpdateEpicStatusToInDone() {
 		Epic epic = createEpic();
 		manager.createEpic(epic);
 		epic.setStatus(TaskStatus.DONE);
 		assertEquals(TaskStatus.DONE, manager.getEpicById(epic.getId()).getStatus());
+	}
+
+	@Test
+	public void shouldNotUpdateEpicIfNull() {
+		Epic epic = createEpic();
+		manager.createEpic(epic);
+		manager.updateEpic(null);
+		assertEquals(epic, manager.getEpicById(epic.getId()));
+	}
+
+	@Test
+	public void shouldNotUpdateSubtaskIfNull() {
+		Epic epic = createEpic();
+		manager.createEpic(epic);
+		SubTask subtask = createSubtask(epic);
+		manager.createSubtask(subtask);
+		manager.updateSubTask(subtask);
+		assertEquals(subtask, manager.getSubtaskById(subtask.getId()));
 	}
 
 	@Test

@@ -114,16 +114,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 	// загружает данные из файла, создавая задачи, эпики, подзадачи и историю.
 	public void fileFromLoad() {
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
-
 			String line = bufferedReader.readLine();
-			while (bufferedReader.ready()) {
-				line = bufferedReader.readLine();
+			while (line != null) {
 				if (line.equals("")) {
 					break;
 				}
-
 				Task task = fromString(line);
-
 				if (task instanceof Epic epic) {
 					addEpic(epic);
 				} else if (task instanceof SubTask subtask) {
@@ -131,11 +127,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 				} else {
 					addTask(task);
 				}
+				line = bufferedReader.readLine();
 			}
-
 			String lineWithHistory = bufferedReader.readLine();
-			for (int id : historyFromString(lineWithHistory)) {
-				addToHistory(id);
+			if (lineWithHistory != null) {
+				for (int id : historyFromString(lineWithHistory)) {
+					addToHistory(id);
+				}
 			}
 		} catch (IOException e) {
 			throw new ManagerSaveException("Данные не найдены!", e);
