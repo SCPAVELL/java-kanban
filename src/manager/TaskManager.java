@@ -25,7 +25,7 @@ public interface TaskManager {
 
 	void updateEpic(Epic epic); // Новая версия эпика
 
-	List<SubTask> getAllSubtasksByEpicId(int id);; // Получение списка всех подзадач определённого эпика.
+	List<SubTask> getAllSubtasksByEpicId(int id); // Получение списка всех подзадач определённого эпика.
 
 	List<Task> getHistory(); // Получить список задач
 
