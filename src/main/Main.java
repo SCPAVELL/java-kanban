@@ -26,9 +26,9 @@ public class Main {
 		manager.createTask(new Task("Description - 2", "Title - 2", TaskStatus.NEW, Instant.now(), 0));
 		manager.createEpic(new Epic("Description - 1", "Epic - 1", TaskStatus.NEW, Instant.now(), 0));
 		manager.createTask(new Epic("Description - 1", "Epic - 2", TaskStatus.NEW, Instant.now(), 0));
-		manager.createSubtask(new SubTask("SubTask - 1", "Description - 1", TaskStatus.DONE, TaskType.EPIC, 3));
-		manager.createSubtask(new SubTask("SubTask - 2", "Description - 2", TaskStatus.DONE, TaskType.EPIC, 3));
-		manager.createSubtask(new SubTask("SubTask - 3", "Description - 3", TaskStatus.DONE, TaskType.EPIC, 3));
+		manager.createSubtask(new SubTask("SubTask - 1", "Description - 1", TaskStatus.DONE, 3));
+		manager.createSubtask(new SubTask("SubTask - 2", "Description - 2", TaskStatus.DONE, 3));
+		manager.createSubtask(new SubTask("SubTask - 3", "Description - 3", TaskStatus.DONE, 3));
 
 		System.out.println("!!!Запрос созданных задач несколько раз в разном порядке!!!");
 		manager.getTask(1);

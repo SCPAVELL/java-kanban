@@ -3,40 +3,29 @@ package task;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
 
-	private final List<SubTask> subTasks = new ArrayList<>();
-	private final List<Integer> subTaskIds = new ArrayList<>();
+	private final List<Integer> subtaskIds = new ArrayList<>();
 	private Instant endTime;
 
-	public Epic(String title, String description, TaskStatus status, TaskType type) {
-		super(title, description, status, type);
-
+	public Epic(String description, String name, TaskStatus status) {
+		super(description, name, status);
 	}
 
-	public Epic(String title, String name, TaskStatus status, Instant startTime, long duration) {
-		super(title, name, status, startTime, duration);
+	public Epic(String description, String name, TaskStatus status, Instant startTime, long duration) {
+		super(description, name, status, startTime, duration);
 		this.endTime = super.getEndTime();
 
 	}
 
-	public void putSubTask(SubTask task) {
-		subTasks.add(task);
-
+	public List<Integer> getSubtaskIds() {
+		return subtaskIds;
 	}
 
-	public ArrayList<SubTask> getSubTasks() {
-		return (ArrayList<SubTask>) subTasks;
-	}
-
-	public void removeSubtask(SubTask subTask) {
-		subTasks.remove(subTask);
-
-	}
-
-	public void setSubtaskId(int id) {
-		subTaskIds.add(id);
+	public void setSubtaskIds(int id) {
+		subtaskIds.add(id);
 	}
 
 	public Instant getEndTime() {
@@ -47,8 +36,29 @@ public class Epic extends Task {
 		this.endTime = endTime;
 	}
 
-	public List<Integer> getSubTaskIds() {
-		return subTaskIds;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		if (!super.equals(o))
+			return false;
+		Epic epic = (Epic) o;
+		return Objects.equals(subtaskIds, epic.subtaskIds);
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), subtaskIds);
+	}
+
+	@Override
+	public String toString() {
+		return "Epic{" + "subtaskIds=" + subtaskIds + ", description='" + getDescription() + '\'' + ", id=" + getId()
+				+ ", name='" + getName() + '\'' + ", status=" + getStatus() + '\'' + ", startTime='"
+				+ getStartTime().toEpochMilli() + '\'' + ", endTime='" + getEndTime().toEpochMilli() + '\''
+				+ ", duration='" + getDuration() + '}';
+
+	}
 }

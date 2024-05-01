@@ -5,28 +5,25 @@ import java.util.Objects;
 
 public class Task {
 
-	private final String title; // Название
-	private final String description; // Описание
+	private String name; // Название
+	private String description; // Описание
 	private int id; // Уникальный идентификационный номер задачи
 	private TaskStatus status; // Статус
-	private final TaskType type; // Подзадачи
 	private Instant startTime; // Время старта выполнения задачи
 	private long duration; // Продолжительность задачи
 
-	public Task(String title, String description, TaskStatus status, TaskType type) {
-		this.title = title;
+	public Task(String description, String name, TaskStatus status) {
 		this.description = description;
+		this.name = name;
 		this.status = status;
-		this.type = type;
 	}
 
-	public Task(String title, String description, TaskStatus status, Instant startTime, long duration) {
-		this.title = title;
+	public Task(String description, String name, TaskStatus status, Instant startTime, long duration) {
 		this.description = description;
+		this.name = name;
 		this.status = status;
 		this.startTime = startTime;
 		this.duration = duration;
-		this.type = null;
 	}
 
 	public TaskStatus getStatus() {
@@ -37,12 +34,20 @@ public class Task {
 		this.status = status;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {
 		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public int getId() {
@@ -51,10 +56,6 @@ public class Task {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public TaskType getType() {
-		return type;
 	}
 
 	public Instant getStartTime() {
@@ -73,33 +74,33 @@ public class Task {
 		this.duration = duration;
 	}
 
-	@Override
-	public String toString() {
-		return "Task [title=" + title + ", description=" + description + ", id=" + id + ", status=" + status + ", type="
-				+ type + "]\n";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(description, id, status, title, type);
-	}
-
 	public Instant getEndTime() {
 		long secondsInMinute = 60L;
 		return startTime.plusSeconds(duration * secondsInMinute);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public String toString() {
+		return "Task{" + "description='" + description + '\'' + ", id=" + id + ", name='" + name + '\'' + ", status="
+				+ status + '\'' + ", startTime='" + startTime.toEpochMilli() + '\'' + ", endTime='"
+				+ getEndTime().toEpochMilli() + '\'' + ", duration='" + duration + '}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
 			return true;
-		if (obj == null)
+		if (o == null || getClass() != o.getClass())
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Task other = (Task) obj;
-		return Objects.equals(description, other.description) && id == other.id && status == other.status
-				&& Objects.equals(title, other.title) && type == other.type;
+		Task task = (Task) o;
+		return id == task.id && Objects.equals(description, task.description) && Objects.equals(name, task.name)
+				&& status == task.status && Objects.equals(startTime, task.startTime)
+				&& Objects.equals(duration, task.duration);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(description, id, name, status, startTime, duration);
 	}
 
 }
