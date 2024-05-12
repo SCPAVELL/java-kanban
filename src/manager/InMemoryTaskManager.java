@@ -17,10 +17,10 @@ import task.TaskStatus;
 
 public class InMemoryTaskManager implements TaskManager {
 
-	private static int taskId = 0;
-	private final HashMap<Integer, Task> tasks = new HashMap<>();
-	private final HashMap<Integer, Epic> epics = new HashMap<>();
-	private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+	protected static int taskId = 0;
+	protected final HashMap<Integer, Task> tasks = new HashMap<>();
+	protected final HashMap<Integer, Epic> epics = new HashMap<>();
+	protected final HashMap<Integer, SubTask> subTasks = new HashMap<>();
 	private final HistoryManager historyManager;
 	private final Comparator<Task> taskComparator = Comparator.comparing(Task::getStartTime);
 	protected Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
@@ -363,7 +363,7 @@ public class InMemoryTaskManager implements TaskManager {
 	}
 
 //возвращает список приоритетных задач (prioritizedTasks) в виде списка.
-	private List<Task> getPrioritizedTasks() {
+	public List<Task> getPrioritizedTasks() {
 		return prioritizedTasks.stream().toList();
 	}
 
