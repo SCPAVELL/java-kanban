@@ -11,7 +11,7 @@ import task.SubTask;
 import task.Task;
 import task.TaskStatus;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
 
 	protected T manager;
 
