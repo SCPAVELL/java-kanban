@@ -32,7 +32,8 @@ public class Main {
 			Epic epic1 = new Epic("Купить машину", "Машина", TaskStatus.NEW, Instant.now(), 2);
 			httpTaskManager.createEpic(epic1);
 
-			SubTask subtask1 = new SubTask("Список покупок", "Магизин", TaskStatus.NEW, epic1.getId(), Instant.now(), 3);
+			SubTask subtask1 = new SubTask("Список покупок", "Магизин", TaskStatus.NEW, epic1.getId(), Instant.now(),
+					3);
 			httpTaskManager.createSubtask(subtask1);
 
 			httpTaskManager.getTask(task1.getId());

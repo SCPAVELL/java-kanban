@@ -73,6 +73,9 @@ class HttpTaskServerTest {
 		}
 	}
 
+	// создаётся новый HTTP-запрос с использованием метода POST для отправки данных
+	// на сервер. Если статус равен 200, это означает, что запрос был успешно
+	// обработан сервером.
 	@Test
 	void shouldGetTasks() {
 		HttpClient client = HttpClient.newHttpClient();
@@ -93,6 +96,8 @@ class HttpTaskServerTest {
 		}
 	}
 
+	// Метод отправляет запрос на сервер. После этого создаётся новый HTTP-запрос с
+	// использованием метода GET для получения данных с сервера.
 	@Test
 	void shouldGetEpics() {
 		HttpClient client = HttpClient.newHttpClient();
@@ -145,6 +150,9 @@ class HttpTaskServerTest {
 		}
 	}
 
+	// создаётся новый HTTP-запрос, отправляет этот запрос на сервер. После этого
+	// создаётся новый HTTP-запрос с использованием метода GET для получения данных
+	// с сервера. Затем клиент отправляет этот запрос на сервер и ожидает ответа.
 	@Test
 	void shouldGetTaskById() {
 		HttpClient client = HttpClient.newHttpClient();
@@ -195,6 +203,16 @@ class HttpTaskServerTest {
 		}
 	}
 
+	/*
+	 * shouldGetSubtaskById(), shouldUpdateTask(), shouldUpdateEpic() отправка POST
+	 * запросов для создания задачи (Task) и эпика (Epic) с определенными
+	 * свойствами. Затем происходит отправка GET запросов для получения созданных
+	 * задач и эпиков. Также происходит обновление статуса задачи на IN_PROGRESS и
+	 * эпика на IN_PROGRESS, а затем отправка GET запросов для проверки обновления.
+	 * 
+	 * То есть данные тесты проверяют функциональность создания, получения и
+	 * обновления задач и эпиков в системе.
+	 */
 	@Test
 	void shouldGetSubtaskById() {
 		HttpClient client = HttpClient.newHttpClient();
@@ -330,6 +348,10 @@ class HttpTaskServerTest {
 		}
 	}
 
+	/*
+	 * тесты проверяют возможность удаления задач и эпиков через HTTP-запросы к
+	 * определенному базовому URL.
+	 */
 	@Test
 	void shouldDeleteTasks() {
 		HttpClient client = HttpClient.newHttpClient();

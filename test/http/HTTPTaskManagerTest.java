@@ -40,6 +40,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 		server.stop();
 	}
 
+	// создает два задания (task1 и task2), добавляет их в TaskManager, получает их
+	// по их идентификаторам и сравнивает с ожидаемым списком задач.
 	@Test
 	public void shouldLoadTasks() {
 		Task task1 = new Task("description1", "Title1", TaskStatus.NEW, Instant.now(), 1);
@@ -52,6 +54,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 		assertEquals(manager.getAllTasks(), list);
 	}
 
+	// создает два эпика (epic1 и epic2), добавляет их в TaskManager, получает их по
+	// их идентификаторам и сравнивает с ожидаемым списком эпиков.
 	@Test
 	public void shouldLoadEpics() {
 		Epic epic1 = new Epic("description1", "Title1", TaskStatus.NEW, Instant.now(), 3);
@@ -64,6 +68,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 		assertEquals(manager.getAllEpics(), list);
 	}
 
+	// создает epic1 и два подзадания (subtask1 и subtask2) связанных с этим
+	// эпиком, добавляет их в TaskManager и сравнивает
 	@Test
 	public void shouldLoadSubtasks() {
 		Epic epic1 = new Epic("description1", "name1", TaskStatus.NEW, Instant.now(), 5);
