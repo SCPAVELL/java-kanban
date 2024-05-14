@@ -44,8 +44,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 	// по их идентификаторам и сравнивает с ожидаемым списком задач.
 	@Test
 	public void shouldLoadTasks() {
-		Task task1 = new Task("description1", "Title1", TaskStatus.NEW, Instant.now(), 1);
-		Task task2 = new Task("description2", "Title2", TaskStatus.NEW, Instant.now(), 2);
+		Task task1 = new Task("description1", "Title1", TaskStatus.NEW, Instant.now(), 0);
+		Task task2 = new Task("description2", "Title2", TaskStatus.NEW, Instant.now(), 1);
 		manager.createTask(task1);
 		manager.createTask(task2);
 		manager.getTask(task1.getId());
