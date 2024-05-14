@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 public class HTTPTaskManager extends FileBackedTaskManager {
 
-	final static String KEY_TASKS = "tasks";
-	final static String KEY_SUBTASKS = "subtasks";
-	final static String KEY_EPICS = "epics";
-	final static String KEY_HISTORY = "history";
+	static final String KEY_TASKS = "tasks";
+	static final String KEY_SUBTASKS = "subtasks";
+	static final String KEY_EPICS = "epics";
+	static final String KEY_HISTORY = "history";
 	final KVTaskClient client;
 	private static final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter())
 			.create();
