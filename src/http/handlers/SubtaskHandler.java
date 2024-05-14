@@ -16,6 +16,9 @@ import adapters.InstantAdapter;
 import manager.TaskManager;
 import task.SubTask;
 
+//метод возвращает все подзадачи или информацию об одной подзадаче по её идентификатору в формате JSON.
+//метода POST создаёт или обновляет подзадачу по запросу.
+//метода DELETE удаляет подзадачу по идентификатору.
 public class SubtaskHandler implements HttpHandler {
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
 	private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;

@@ -14,6 +14,7 @@ import com.sun.net.httpserver.HttpHandler;
 import adapters.InstantAdapter;
 import manager.TaskManager;
 
+//метод возвращает подзадачу по её идентификатору в формате JSON
 public class SubtaskByEpicHandler implements HttpHandler {
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
 	private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;

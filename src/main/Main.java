@@ -26,13 +26,13 @@ public class Main {
 			HistoryManager historyManager = Managers.getDefaultHistory();
 			TaskManager httpTaskManager = Managers.getDefault(historyManager);
 
-			Task task1 = new Task("Разработать лифт до луны", "Космолифт", TaskStatus.NEW, Instant.now(), 1);
+			Task task1 = new Task("Построить дом", "Дом", TaskStatus.NEW, Instant.now(), 1);
 			httpTaskManager.createTask(task1);
 
-			Epic epic1 = new Epic("Посадить дерево", "Дерево", TaskStatus.NEW, Instant.now(), 2);
+			Epic epic1 = new Epic("Купить машину", "Машина", TaskStatus.NEW, Instant.now(), 2);
 			httpTaskManager.createEpic(epic1);
 
-			SubTask subtask1 = new SubTask("Купить семена", "Семена", TaskStatus.NEW, epic1.getId(), Instant.now(), 3);
+			SubTask subtask1 = new SubTask("Список покупок", "Магизин", TaskStatus.NEW, epic1.getId(), Instant.now(), 3);
 			httpTaskManager.createSubtask(subtask1);
 
 			httpTaskManager.getTask(task1.getId());

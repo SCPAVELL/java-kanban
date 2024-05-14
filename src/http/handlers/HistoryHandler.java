@@ -14,6 +14,7 @@ import com.sun.net.httpserver.HttpHandler;
 import adapters.InstantAdapter;
 import manager.TaskManager;
 
+//Если метод запроса — GET, то метод возвращает историю задач в формате JSON. В ином случае возвращается сообщение о некорректном запросе.
 public class HistoryHandler implements HttpHandler {
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
 	private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;

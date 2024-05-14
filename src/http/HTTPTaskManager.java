@@ -10,6 +10,7 @@ import manager.FileBackedTaskManager;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.stream.Collectors;
+//принимая на вход объект HistoryManager и строку path, и загружает данные из файлов задач, эпиков, подзадач и истории с помощью KVTaskClient.
 
 public class HTTPTaskManager extends FileBackedTaskManager {
 
@@ -68,6 +69,9 @@ public class HTTPTaskManager extends FileBackedTaskManager {
 		}
 	}
 
+	// сохраняет текущее состояние задач, эпиков, подзадач и истории в файлы,
+	// используя KVTaskClient. Для этого он сериализует значения коллекций tasks,
+	// subTasks, epics и истории в формат JSON
 	@Override
 	public void save() {
 		client.put(KEY_TASKS, gson.toJson(tasks.values()));

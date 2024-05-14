@@ -8,6 +8,8 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 
+//извлекается ключ из URI запроса, проверяется его наличие и наличие значения для этого ключа в коллекции data. 
+//Если ключ или значение отсутствуют, то возвращается соответствующий код ответа (404 или 400).
 public class KVServer {
 
 	public static final int PORT = 8078;
@@ -24,7 +26,6 @@ public class KVServer {
 	}
 
 	private void load(HttpExchange httpExchange) {
-		// TODO Добавьте получение значения по ключу
 		try (httpExchange) {
 			System.out.println("\n/load");
 			if (!hasAuth(httpExchange)) {

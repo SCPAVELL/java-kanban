@@ -42,8 +42,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 
 	@Test
 	public void shouldLoadTasks() {
-		Task task1 = new Task("description1", "name1", TaskStatus.NEW, Instant.now(), 1);
-		Task task2 = new Task("description2", "name2", TaskStatus.NEW, Instant.now(), 2);
+		Task task1 = new Task("description1", "Title1", TaskStatus.NEW, Instant.now(), 1);
+		Task task2 = new Task("description2", "Title2", TaskStatus.NEW, Instant.now(), 2);
 		manager.createTask(task1);
 		manager.createTask(task2);
 		manager.getTask(task1.getId());
@@ -54,8 +54,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 
 	@Test
 	public void shouldLoadEpics() {
-		Epic epic1 = new Epic("description1", "name1", TaskStatus.NEW, Instant.now(), 3);
-		Epic epic2 = new Epic("description2", "name2", TaskStatus.NEW, Instant.now(), 4);
+		Epic epic1 = new Epic("description1", "Title1", TaskStatus.NEW, Instant.now(), 3);
+		Epic epic2 = new Epic("description2", "Title2", TaskStatus.NEW, Instant.now(), 4);
 		manager.createEpic(epic1);
 		manager.createEpic(epic2);
 		manager.getEpicById(epic1.getId());
@@ -67,8 +67,8 @@ class HTTPTaskManagerTest<T extends TaskManagerTest<HTTPTaskManager>> {
 	@Test
 	public void shouldLoadSubtasks() {
 		Epic epic1 = new Epic("description1", "name1", TaskStatus.NEW, Instant.now(), 5);
-		SubTask subtask1 = new SubTask("description1", "name1", TaskStatus.NEW, epic1.getId(), Instant.now(), 6);
-		SubTask subtask2 = new SubTask("description2", "name2", TaskStatus.NEW, epic1.getId(), Instant.now(), 7);
+		SubTask subtask1 = new SubTask("description1", "Title1", TaskStatus.NEW, epic1.getId(), Instant.now(), 6);
+		SubTask subtask2 = new SubTask("description2", "Title2", TaskStatus.NEW, epic1.getId(), Instant.now(), 7);
 		manager.createSubtask(subtask1);
 		manager.createSubtask(subtask2);
 		manager.getSubtaskById(subtask1.getId());
