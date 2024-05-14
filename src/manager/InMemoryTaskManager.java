@@ -346,7 +346,7 @@ public class InMemoryTaskManager implements TaskManager {
 	// выбрасывает исключение, если обнаружено пересечение временных интервалов.
 	private void validateTaskPriority() {
 		List<Task> tasks = getPrioritizedTasks();
-		for (int i = 1; i < prioritizedTasks.size(); i++) {
+		for (int i = 1; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			if (!checkTime(task)) {
 				throw new ManagerException(
