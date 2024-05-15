@@ -1,23 +1,19 @@
 package http.handlers;
 
 import java.io.IOException;
+
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-
-import org.junit.platform.commons.logging.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-
 import adapters.InstantAdapter;
 import manager.TaskManager;
 import task.Task;
-import java.util.logging.Logger;
 
 public class TaskHandler implements HttpHandler {
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
