@@ -23,7 +23,6 @@ public class TaskHandler implements HttpHandler {
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(Instant.class, new InstantAdapter()).create();
 	private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 	private final TaskManager taskManager;
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(TaskHandler.class);
 
 	public TaskHandler(TaskManager taskManager) {
 		this.taskManager = taskManager;
@@ -117,6 +116,6 @@ public class TaskHandler implements HttpHandler {
 		try (OutputStream os = httpExchange.getResponseBody()) {
 			os.write(response.getBytes());
 		}
-		logger.info("TaskHandler request");
+
 	}
 }

@@ -58,6 +58,9 @@ public class KVServer {
 		}
 	}
 
+	// при возникновении исключения IOException при считывании значения из запроса,
+	// будет отправлен ответ с HTTP-статусом 500 (Internal Server Error) и
+	// сообщением об ошибке.
 	private void save(HttpExchange httpExchange) throws IOException {
 		try (httpExchange) {
 			System.out.println("\n/save");
@@ -87,7 +90,6 @@ public class KVServer {
 					System.out.println("Ошибка при считывании значения из запроса: " + e.getMessage());
 					httpExchange.sendResponseHeaders(500, 0);
 				}
-
 			} else {
 				System.out.println("/save ждёт POST-запрос, а получил: " + httpExchange.getRequestMethod());
 				httpExchange.sendResponseHeaders(405, 0);

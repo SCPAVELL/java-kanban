@@ -1,6 +1,7 @@
 package http;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.net.InetSocketAddress;
 import java.util.logging.Logger;
 import com.sun.net.httpserver.HttpServer;
@@ -18,7 +19,7 @@ public class HttpTaskServer {
 
 	private final HttpServer httpServer;
 	private static final int PORT = 8080;
-	private static final Logger logger = Logger.getLogger(HttpTaskServer.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(KVServer.class.getName());
 
 	public HttpTaskServer() throws IOException, InterruptedException {
 		HistoryManager historyManager = Managers.getDefaultHistory();
@@ -31,18 +32,16 @@ public class HttpTaskServer {
 		httpServer.createContext("/tasks/subtask/epic/", new SubtaskByEpicHandler(taskManager));
 		httpServer.createContext("/tasks/history/", new HistoryHandler(taskManager));
 		httpServer.createContext("/tasks/", new TasksHandler(taskManager));
-
-		logger.info("HTTP server initialized on port " + PORT);
 	}
 
 	public void start() {
+		LOGGER.log(Level.INFO, "Starting KVServer on port {0}", PORT);
 		httpServer.start();
-		logger.info("HTTP server started");
 	}
 
 	public void stop() {
+		LOGGER.log(Level.INFO, "Stopping KVServer");
 		httpServer.stop(1);
-		logger.info("HTTP server stopped");
 	}
 
 }
