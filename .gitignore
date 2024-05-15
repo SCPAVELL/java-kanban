@@ -6,6 +6,7 @@
 
 # BlueJ files
 *.ctxt
+*.gson-2.9.1.jar
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

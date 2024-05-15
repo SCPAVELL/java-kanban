@@ -73,19 +73,27 @@ public class KVServer {
 					httpExchange.sendResponseHeaders(400, 0);
 					return;
 				}
-				String value = readText(httpExchange);
-				if (value.isEmpty()) {
-					System.out.println("Value для сохранения пустой. value указывается в теле запроса");
-					httpExchange.sendResponseHeaders(400, 0);
-					return;
+				try {
+					String value = readText(httpExchange);
+					if (value.isEmpty()) {
+						System.out.println("Value для сохранения пустой. value указывается в теле запроса");
+						httpExchange.sendResponseHeaders(400, 0);
+						return;
+					}
+					data.put(key, value);
+					System.out.println("Значение для ключа " + key + " успешно обновлено!");
+					httpExchange.sendResponseHeaders(200, 0);
+				} catch (IOException e) {
+					System.out.println("Ошибка при считывании значения из запроса: " + e.getMessage());
+					httpExchange.sendResponseHeaders(500, 0);
 				}
-				data.put(key, value);
-				System.out.println("Значение для ключа " + key + " успешно обновлено!");
-				httpExchange.sendResponseHeaders(200, 0);
+
 			} else {
 				System.out.println("/save ждёт POST-запрос, а получил: " + httpExchange.getRequestMethod());
 				httpExchange.sendResponseHeaders(405, 0);
 			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
