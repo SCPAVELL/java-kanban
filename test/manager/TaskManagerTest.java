@@ -6,14 +6,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
-import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
 import task.TaskStatus;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
 
 	protected T manager;
 
@@ -46,7 +44,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		assertEquals(TaskStatus.NEW, task.getStatus());
 		assertEquals(List.of(task), tasks);
 	}
-	
 
 	/*
 	 * Метод shouldCreateEpic() создает эпик с помощью createEpic() и затем
@@ -62,7 +59,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		List<Epic> epics = manager.getAllEpics();
 		assertNotNull(epic.getStatus());
 		assertEquals(TaskStatus.NEW, epic.getStatus());
-		assertEquals(Collections.EMPTY_LIST, epic.getSubTaskIds());
+		assertEquals(Collections.EMPTY_LIST, epic.getSubtaskIds());
 		assertEquals(List.of(epic), epics);
 	}
 
@@ -84,7 +81,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		assertEquals(epic.getId(), subtask.getEpicId());
 		assertEquals(TaskStatus.NEW, subtask.getStatus());
 		assertEquals(List.of(subtask), subtasks);
-		assertEquals(List.of(subtask.getId()), epic.getSubTaskIds());
+		assertEquals(List.of(subtask.getId()), epic.getSubtaskIds());
 	}
 
 	/*
@@ -120,11 +117,37 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	}
 
 	@Test
+	public void shouldNotUpdateTaskIfNull() {
+		Task task = createTask();
+		manager.createTask(task);
+		manager.updateTask(null);
+		assertEquals(task, manager.getTask(task.getId()));
+	}
+
+	@Test
 	public void shouldUpdateEpicStatusToInDone() {
 		Epic epic = createEpic();
 		manager.createEpic(epic);
 		epic.setStatus(TaskStatus.DONE);
 		assertEquals(TaskStatus.DONE, manager.getEpicById(epic.getId()).getStatus());
+	}
+
+	@Test
+	public void shouldNotUpdateEpicIfNull() {
+		Epic epic = createEpic();
+		manager.createEpic(epic);
+		manager.updateEpic(null);
+		assertEquals(epic, manager.getEpicById(epic.getId()));
+	}
+
+	@Test
+	public void shouldNotUpdateSubtaskIfNull() {
+		Epic epic = createEpic();
+		manager.createEpic(epic);
+		SubTask subtask = createSubtask(epic);
+		manager.createSubtask(subtask);
+		manager.updateSubTask(subtask);
+		assertEquals(subtask, manager.getSubtaskById(subtask.getId()));
 	}
 
 	@Test
@@ -147,7 +170,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	public void shouldRemoveTaskById() {
 		Task task = createTask();
 		manager.createTask(task);
-		manager.removeTaskById(task.getId());
+		manager.deleteTaskById(task.getId());
 		assertEquals(Collections.EMPTY_LIST, manager.getAllTasks());
 	}
 
@@ -155,7 +178,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	public void shouldRemoveEpicById() {
 		Epic epic = createEpic();
 		manager.createEpic(epic);
-		manager.removeTaskById(epic.getId());
+		manager.deleteEpicById(epic.getId());
 		assertEquals(Collections.EMPTY_LIST, manager.getAllEpics());
 	}
 
@@ -169,7 +192,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	public void shouldNotDeleteTaskIfBadId() {
 		Task task = createTask();
 		manager.createTask(task);
-		manager.removeTaskById(228);
+		manager.deleteTaskById(228);
 		assertEquals(List.of(task), manager.getAllTasks());
 	}
 
@@ -177,7 +200,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	public void shouldNotDeleteEpicIfBadId() {
 		Epic epic = createEpic();
 		manager.createEpic(epic);
-		manager.removeTaskById(228);
+		manager.deleteTaskById(228);
 		assertEquals(List.of(epic), manager.getAllEpics());
 	}
 
@@ -187,9 +210,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 		manager.createEpic(epic);
 		SubTask subtask = createSubtask(epic);
 		manager.createSubtask(subtask);
-		manager.removeTaskById(228);
+		manager.deleteTaskById(228);
 		assertEquals(List.of(subtask), manager.getAllSubtasks());
-		assertEquals(List.of(subtask.getId()), manager.getEpicById(epic.getId()).getSubTaskIds());
+		assertEquals(List.of(subtask.getId()), manager.getEpicById(epic.getId()).getSubtaskIds());
 	}
 
 	/*
@@ -201,21 +224,21 @@ abstract class TaskManagerTest<T extends TaskManager> {
 	@Test
 	public void shouldDoNothingIfTaskHashMapIsEmpty() {
 		manager.removeTasks();
-		manager.removeTaskById(999);
+		manager.deleteTaskById(999);
 		assertEquals(0, manager.getAllTasks().size());
 	}
 
 	@Test
 	public void shouldDoNothingIfEpicHashMapIsEmpty() {
 		manager.removeEpics();
-		manager.removeTaskById(999);
+		manager.deleteTaskById(999);
 		assertTrue(manager.getAllEpics().isEmpty());
 	}
 
 	@Test
 	public void shouldDoNothingIfSubtaskHashMapIsEmpty() {
 		manager.removeEpics();
-		manager.removeTaskById(999);
+		manager.deleteTaskById(999);
 		assertEquals(0, manager.getAllSubtasks().size());
 	}
 

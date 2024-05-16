@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import manager.HistoryManager;
-import manager.Managers;
 import task.Task;
 import task.TaskStatus;
 

@@ -1,6 +1,5 @@
 package manager;
 
-import java.util.ArrayList;
 import java.util.List;
 import task.Epic;
 import task.SubTask;
@@ -26,9 +25,7 @@ public interface TaskManager {
 
 	void updateEpic(Epic epic); // Новая версия эпика
 
-	Task removeTaskById(int id); // Удаление по идентификатору.
-
-	ArrayList<SubTask> getEpicSubTask(Epic epic); // Получение списка всех подзадач определённого эпика.
+	List<SubTask> getAllSubtasksByEpicId(int id); // Получение списка всех подзадач определённого эпика.
 
 	List<Task> getHistory(); // Получить список задач
 
@@ -40,10 +37,18 @@ public interface TaskManager {
 
 	void checkStatus(Epic epic); // обновление статуса эпика, с учетом подзадач
 
-	int createTask(Task task); // создает новую задачу с уникальным ID
+	Task createTask(Task task); // создает новую задачу с уникальным ID
 
-	int createEpic(Epic epic); // создает новуй эпик с уникальным ID
+	Epic createEpic(Epic epic); // создает новуй эпик с уникальным ID
 
-	int createSubtask(SubTask subtask); // создает новую подзадачу с уникальным ID
+	SubTask createSubtask(SubTask subtask); // создает новую подзадачу с уникальным ID
+
+	void deleteTaskById(int id);
+
+	void deleteEpicById(int id);
+
+	void deleteSubtaskById(int id);
+
+	List<Task> getPrioritizedTasks();
 
 }

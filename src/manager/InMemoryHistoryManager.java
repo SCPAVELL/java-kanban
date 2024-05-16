@@ -107,4 +107,3 @@ public class InMemoryHistoryManager implements HistoryManager {
 		return list.getTasks();
 	}
 }
-
